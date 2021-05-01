@@ -14,6 +14,9 @@ public class Dice {
     }
 
     public int rollDice() {
+        if (RNG.random(100) <= 10) {
+            return -1;
+        }
         return RNG.random(value);
     }
 

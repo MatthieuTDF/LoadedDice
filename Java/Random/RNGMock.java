@@ -11,9 +11,9 @@ public class RNGMock extends RNGImpl {
     }
 
     public int randomLoaded(int max, int loadedFace, int loadedWeight) {
-        if (loadedWeight != -1){
-            return 1;
+        if ((loadedWeight == -1) || (loadedFace == -1)){
+            return -1;
         }
-        return -1;
+        return 1;
     }
 }

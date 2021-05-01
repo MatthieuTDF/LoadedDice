@@ -2,15 +2,14 @@ package tests;
 
 import Random.RNG;
 import Random.RNGMock;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import Random.RNGMockBroken;
+import org.junit.*;
 import src.*;
 
 public class ThrowTests {
 
-    @BeforeClass
-    public static void mockRNG() {
+    @Before
+    public  void mockRNGBefore() {
         RNG.setImpl(new RNGMock());
     }
 
@@ -117,9 +116,10 @@ public class ThrowTests {
         Assert.assertEquals(6, res[4]);
     }
 
+    //Checks a run with invalid weight
     @Test
-    public void invalid(){
-        Dice dice1 = new LoadedDice(6, 1, 100);
+    public void invalidWeight(){
+        Dice dice1 = new LoadedDice(6, 1, 110);
         Dice dice2 = new Dice(6);
         Coin coin = new Coin();
         Knucklebone knucklebone1 = new Knucklebone();
@@ -129,9 +129,51 @@ public class ThrowTests {
         Knucklebone[] knucklebones = {knucklebone1, knucklebone2};
         Throw t = new Throw(dices, coins, knucklebones);
         int[] res = t.run();
-        Assert.assertEquals(1, res[0]);
+        Assert.assertEquals(-1, res[0]);
         Assert.assertEquals(2, res[1]);
         Assert.assertEquals(4, res[2]);
+        Assert.assertEquals(6, res[3]);
+        Assert.assertEquals(6, res[4]);
+    }
+
+    //Checks a run with invalid loaded face
+    @Test
+    public void invalidFace(){
+        Dice dice1 = new LoadedDice(6, 7, 50);
+        Dice dice2 = new Dice(6);
+        Coin coin = new Coin();
+        Knucklebone knucklebone1 = new Knucklebone();
+        Knucklebone knucklebone2 = new Knucklebone();
+        Dice[] dices = {dice1, dice2};
+        Coin[] coins = {coin};
+        Knucklebone[] knucklebones = {knucklebone1, knucklebone2};
+        Throw t = new Throw(dices, coins, knucklebones);
+        int[] res = t.run();
+        Assert.assertEquals(-1, res[0]);
+        Assert.assertEquals(2, res[1]);
+        Assert.assertEquals(4, res[2]);
+        Assert.assertEquals(6, res[3]);
+        Assert.assertEquals(6, res[4]);
+    }
+
+    //Somewhat checks the broken dice and coin logic
+    //(uses a special random implementation causing every dice/coin to be broken)
+    @Test
+    public void invalidLoadedFace(){
+        RNG.setImpl(new RNGMockBroken());
+        Dice dice1 = new LoadedDice(6, 1, 50);
+        Dice dice2 = new Dice(6);
+        Coin coin = new Coin();
+        Knucklebone knucklebone1 = new Knucklebone();
+        Knucklebone knucklebone2 = new Knucklebone();
+        Dice[] dices = {dice1, dice2};
+        Coin[] coins = {coin};
+        Knucklebone[] knucklebones = {knucklebone1, knucklebone2};
+        Throw t = new Throw(dices, coins, knucklebones);
+        int[] res = t.run();
+        Assert.assertEquals(-1, res[0]);
+        Assert.assertEquals(-1, res[1]);
+        Assert.assertEquals(1, res[2]);
         Assert.assertEquals(6, res[3]);
         Assert.assertEquals(6, res[4]);
     }

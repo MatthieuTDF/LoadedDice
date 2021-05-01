@@ -10,7 +10,9 @@ public class RNGImpl {
     }
 
     public int randomLoaded(int max, int loadedFace, int loadedWeight) {
-        if (loadedWeight != -1) {
+        if (loadedWeight == -1 ||loadedFace == -1) {
+            return -1;
+        }else {
             if ((r.nextInt(100) + 1) <= loadedWeight) {
                 return loadedFace;
             } else {
@@ -22,8 +24,6 @@ public class RNGImpl {
 
                 return res;
             }
-        }else {
-           return -1;
         }
     }
 
